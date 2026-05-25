@@ -76,7 +76,7 @@ export default function SettingsPanel({ isOpen, onClose, settings, onSave }: Set
               Transcription Backend
             </label>
             <div className="grid grid-cols-2 gap-2">
-              {(["colab", "groq"] as const).map((type) => (
+              {(["groq", "colab"] as const).map((type) => (
                 <button
                   key={type}
                   onClick={() => setLocal({ ...local, backendType: type })}
@@ -86,10 +86,10 @@ export default function SettingsPanel({ isOpen, onClose, settings, onSave }: Set
                       : "border-gray-200 hover:border-gray-300 text-gray-600"
                   }`}
                 >
-                  <span className="text-xl">{type === "colab" ? "🔬" : "⚡"}</span>
-                  <span>{type === "colab" ? "Google Colab" : "Groq API"}</span>
+                  <span className="text-xl">{type === "groq" ? "⚡" : "🔬"}</span>
+                  <span>{type === "groq" ? "Groq API" : "Google Colab"}</span>
                   <span className="text-xs font-normal opacity-70">
-                    {type === "colab" ? "Free GPU" : "Free tier"}
+                    {type === "groq" ? "Free · Recommended" : "Free GPU"}
                   </span>
                 </button>
               ))}

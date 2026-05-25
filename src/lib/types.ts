@@ -21,7 +21,7 @@ export interface AppSettings {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  backendType: "colab",
+  backendType: "groq",
   colabUrl: "",
   groqApiKey: "",
   defaultLanguage: "auto",

@@ -144,8 +144,9 @@ export default function HomePage() {
           <div className="flex items-center gap-3 p-4 bg-amber-50 border border-amber-200 rounded-2xl">
             <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
             <div className="flex-1 text-sm text-amber-800">
-              <span className="font-semibold">Setup required:</span> Configure your backend to
-              start transcribing.
+              <span className="font-semibold">Setup required:</span> Add a free{" "}
+              <a href="https://console.groq.com" target="_blank" rel="noopener noreferrer" className="underline font-medium">Groq API key</a>{" "}
+              to start transcribing.
             </div>
             <button
               onClick={() => setSettingsOpen(true)}
