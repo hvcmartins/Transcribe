@@ -1,0 +1,29 @@
+# Build outputs
+.next/
+out/
+
+# Dev dependencies / caches
+node_modules/
+npm-debug.log*
+
+# Git & CI
+.git/
+.github/
+.gitignore
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Env files (never bake secrets into the image)
+.env
+.env.local
+.env*.local
+
+# Test / docs
+*.test.*
+*.spec.*
+colab/
+README.md

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, ExternalLink, CheckCircle, AlertCircle, Loader2, Copy } from "lucide-react";
+import { X, ExternalLink, CheckCircle, AlertCircle, Loader2, Server } from "lucide-react";
 import { AppSettings, DEFAULT_SETTINGS } from "@/lib/types";
 
 interface SettingsPanelProps {
@@ -15,11 +15,21 @@ export default function SettingsPanel({ isOpen, onClose, settings, onSave }: Set
   const [local, setLocal] = useState<AppSettings>(settings);
   const [testStatus, setTestStatus] = useState<"idle" | "testing" | "ok" | "fail">("idle");
   const [testMessage, setTestMessage] = useState("");
+  const [serverGroqKey, setServerGroqKey] = useState(false);
 
   useEffect(() => {
     setLocal(settings);
     setTestStatus("idle");
   }, [settings, isOpen]);
+
+  // Check if GROQ_API_KEY is pre-configured on the server (e.g. Unraid env var)
+  useEffect(() => {
+    if (!isOpen) return;
+    fetch("/api/config")
+      .then((r) => r.json())
+      .then((d) => setServerGroqKey(!!d.groqKeyConfigured))
+      .catch(() => {});
+  }, [isOpen]);
 
   const handleSave = () => {
     onSave(local);
@@ -172,36 +182,55 @@ export default function SettingsPanel({ isOpen, onClose, settings, onSave }: Set
           {/* Groq settings */}
           {local.backendType === "groq" && (
             <div className="space-y-4">
-              <div className="p-4 bg-orange-50 border border-orange-200 rounded-xl text-sm">
-                <p className="font-semibold text-orange-800 mb-1">⚡ Groq — Free whisper-large-v3</p>
-                <p className="text-orange-700">
-                  Get a free API key at{" "}
-                  <a
-                    href="https://console.groq.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-medium underline"
-                  >
-                    console.groq.com
-                  </a>
-                  . Free tier: generous daily limits.
-                </p>
-              </div>
+              {/* Server pre-configured badge */}
+              {serverGroqKey && (
+                <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-xl text-sm text-green-800">
+                  <Server className="w-4 h-4 flex-shrink-0" />
+                  <div>
+                    <span className="font-semibold">Pre-configured by server</span>
+                    <span className="text-green-700"> — GROQ_API_KEY is set as an environment variable (e.g. in Unraid). No key needed here.</span>
+                  </div>
+                  <CheckCircle className="w-4 h-4 flex-shrink-0 text-green-500" />
+                </div>
+              )}
+
+              {!serverGroqKey && (
+                <div className="p-4 bg-orange-50 border border-orange-200 rounded-xl text-sm">
+                  <p className="font-semibold text-orange-800 mb-1">⚡ Groq — Free whisper-large-v3</p>
+                  <p className="text-orange-700">
+                    Get a free API key at{" "}
+                    <a
+                      href="https://console.groq.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium underline"
+                    >
+                      console.groq.com
+                    </a>
+                    . Free tier: generous daily limits.
+                  </p>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Groq API Key
+                  {serverGroqKey && (
+                    <span className="ml-2 text-xs font-normal text-green-600">(optional — overrides server key)</span>
+                  )}
                 </label>
                 <input
                   type="password"
                   value={local.groqApiKey}
                   onChange={(e) => setLocal({ ...local, groqApiKey: e.target.value })}
-                  placeholder="gsk_..."
+                  placeholder={serverGroqKey ? "Leave empty to use server key" : "gsk_..."}
                   className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent font-mono"
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Your key is never stored on a server — it stays in your browser.
-                </p>
+                {!serverGroqKey && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Your key is never stored on a server — it stays in your browser.
+                  </p>
+                )}
               </div>
             </div>
           )}

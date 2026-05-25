@@ -63,15 +63,20 @@ export async function POST(req: NextRequest) {
 
     // --- Groq backend ---
     if (backendType === "groq") {
-      if (!groqApiKey) {
+      // Client-supplied key takes priority; fall back to server env var (Unraid / Docker)
+      const effectiveKey = groqApiKey || process.env.GROQ_API_KEY || "";
+      if (!effectiveKey) {
         return NextResponse.json(
-          { error: "Groq API key not configured. Please open Settings and add your key." },
+          {
+            error:
+              "Groq API key not configured. Add it in Settings, or set the GROQ_API_KEY environment variable on the server.",
+          },
           { status: 400 }
         );
       }
 
       const { default: Groq } = await import("groq-sdk");
-      const groq = new Groq({ apiKey: groqApiKey });
+      const groq = new Groq({ apiKey: effectiveKey });
 
       // Convert File to the format groq-sdk expects
       const arrayBuffer = await file.arrayBuffer();

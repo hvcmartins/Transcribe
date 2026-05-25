@@ -1,0 +1,25 @@
+services:
+  turboscript:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ghcr.io/hvcmartins/transcribe:latest
+    container_name: turboscript
+    restart: unless-stopped
+
+    ports:
+      - "3000:3000"          # Change left side to remap: e.g. "8080:3000"
+
+    environment:
+      # ── Optional: pre-configure Groq so users skip the Settings step ──────
+      # Uncomment and fill in your key, or use a .env file:
+      #   GROQ_API_KEY=gsk_xxxxxxxxxxxx
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+
+    # ── Health check ──────────────────────────────────────────────────────────
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/config"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

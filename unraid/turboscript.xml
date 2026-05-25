@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>TurboScript</Name>
+  <Repository>ghcr.io/hvcmartins/transcribe:latest</Repository>
+  <Registry>https://github.com/hvcmartins/Transcribe/pkgs/container/transcribe</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/hvcmartins/Transcribe/issues</Support>
+  <Project>https://github.com/hvcmartins/Transcribe</Project>
+  <Overview>
+    TurboScript — AI audio and video transcription powered by OpenAI Whisper.&#xD;&#xA;
+    Drop any MP3, MP4, WAV, M4A, OGG, FLAC file and get a full transcription with timestamps.&#xD;&#xA;
+    &#xD;&#xA;
+    Supports 99+ languages, auto-detection, translation to English, and export to TXT / SRT / VTT.&#xD;&#xA;
+    &#xD;&#xA;
+    Powered by the free Groq API (whisper-large-v3-turbo). Get a free key at console.groq.com.&#xD;&#xA;
+    Set GROQ_API_KEY below to pre-configure it for all users on your network.
+  </Overview>
+  <Category>MediaApp: Tools: Network:Other</Category>
+  <WebUI>http://[IP]:[PORT:3000]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/hvcmartins/Transcribe/main/unraid/turboscript.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/hvcmartins/Transcribe/main/unraid/icon.png</Icon>
+  <ExtraParams>--restart=unless-stopped</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+
+  <!-- ── Web UI port ──────────────────────────────────────────────────────── -->
+  <Config
+    Name="Web UI Port"
+    Target="3000"
+    Default="3000"
+    Mode="tcp"
+    Description="Port for the TurboScript web interface. Access via http://[serverIP]:[port]"
+    Type="Port"
+    Display="always"
+    Required="true"
+    Mask="false">3000</Config>
+
+  <!-- ── Groq API key ─────────────────────────────────────────────────────── -->
+  <Config
+    Name="Groq API Key"
+    Target="GROQ_API_KEY"
+    Default=""
+    Mode=""
+    Description="[Recommended] Your Groq API key (free at console.groq.com). Pre-configures transcription for everyone on your network — no Settings step needed. Leave empty to let users enter their own key in the UI."
+    Type="Variable"
+    Display="always"
+    Required="false"
+    Mask="true"></Config>
+
+</Container>
